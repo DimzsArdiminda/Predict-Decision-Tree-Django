@@ -61,7 +61,15 @@ def predict_view(request):
         # print(new_data)
 
         # # Lakukan prediksi menggunakan model
-        prediction = train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, fasting_blood_sugar, rest_ecg, max_heart, exercise_angina, oldpeak, st_slope)
+        prediction, accuracy, report, matrix = train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, fasting_blood_sugar, rest_ecg, max_heart, exercise_angina, oldpeak, st_slope)
         result = "Terkena penyakit jantung" if prediction[0] == 1 else "Tidak terkena penyakit jantung"
+        accuracy_message = "Akurasi Model: {:.2f}%".format(accuracy * 100)
+        report_message = "Laporan Klasifikasi:\n{}".format(report)
+        matrix_message = "Matriks Konfusi:\n{}".format(matrix)
 
-        return render(request, 'pages/index.html', {'result': result})
+        return render(request, 'pages/index.html', {
+            'result': result,
+            'accuracy_message': accuracy_message,
+            'classification_report': report,
+            'confusion_matrix': matrix.tolist(),  # Ubah confusion matrix ke list untuk template
+        })

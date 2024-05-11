@@ -18,7 +18,15 @@ def train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, 
     # Langkah 4: Membuat dan Melatih Model Decision Tree
     model = DecisionTreeClassifier(random_state=42)
     model.fit(X_train, y_train)
-
+    
+    # 5. Evaluasi model
+    somerows = data.head(),
+    info = data.info(),
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
+    matrix = confusion_matrix(y_test, y_pred)
+    
     # Menyiapkan input untuk prediksi
     new_data = pd.DataFrame({
         'age': [age],
@@ -37,4 +45,4 @@ def train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, 
     # Melakukan prediksi menggunakan model Decision Tree yang sudah dilatih
     prediction = model.predict(new_data)
 
-    return prediction
+    return prediction, accuracy, report, matrix
