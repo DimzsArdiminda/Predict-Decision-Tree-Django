@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .calculate import train_model_and_predict
 import pandas as pd
+from main.forms import DatasetForm
+from main.models import Datasets
 
 def test1(request):
     return HttpResponse("<h1>Test 1</h1>")
@@ -11,6 +13,22 @@ def index(request):
 
 def about(request):
     return render(request, 'pages/about/index.html')
+
+def upload_dataset(request):
+    if request.method == 'POST':
+        form = DatasetForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+        else:
+            context = {'form': form}
+            return render(request, 'pages/upload/index.html', context)
+    context = {'form': DatasetForm()}
+    return render(request, 'pages/upload/index.html', context)
+
+def show_dataset(request):
+    data = Datasets.objects.all()
+    context = {'data': data}
+    return render(request, 'pages/upload/show.html', context)
 
 def predict_view(request):
     if request.method == 'POST':
