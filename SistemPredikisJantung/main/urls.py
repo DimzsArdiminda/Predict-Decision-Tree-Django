@@ -27,8 +27,9 @@ urlpatterns = [
     path('test1/', views.test1),
     path('', views.index, name='index'),
     path('about/', views.about, name='about'),
+    path('form/', views.form, name='form'),
     # route
     path('upload/', views.upload_dataset, name='upload-dataset'),
     path('show/', views.show_dataset, name='show-dataset'),
-    path('predict/', views.predict_view, name='predict'),
+    path('form/hasil/', views.predict_view, name='predict'),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
