@@ -16,6 +16,9 @@ from django.core.files import File
 def index(request):
     return render(request, 'pages/index.html')
 
+def form(request):
+    return render(request, 'pages/predict/form.html')
+
 def about(request):
     return render(request, 'pages/about/index.html')
 
@@ -142,7 +145,7 @@ def predict_view(request):
             # Penanganan jika konversi gagal (misalnya karena input tidak valid)
             return HttpResponse("Invalid input. Please enter valid values.")
 
-        # Gunakan nilai-nilai integer tersebut untuk prediksi
+        # dd
         # new_data = pd.DataFrame({
         #     'age': [age],
         #     'sex': [sex],
@@ -164,10 +167,16 @@ def predict_view(request):
         accuracy_message = "Akurasi Model: {:.2f}%".format(accuracy * 100)
         report_message = "Laporan Klasifikasi:\n{}".format(report)
         matrix_message = "Matriks Konfusi:\n{}".format(matrix)
-
-        return render(request, 'pages/index.html', {
-            'result': result,
-            'accuracy_message': accuracy_message,
-            'classification_report': report,
-            'confusion_matrix': matrix.tolist(),  # Ubah confusion matrix ke list untuk template
-        })
+        kosong = 'belum ada hasil'
+        # condition if result, accuracy repot_massage matirxc is not None
+        if result is not None and accuracy_message is not None and report is not None and matrix is not None:
+            return render(request, 'pages/predict/index.html', {
+                'result': result,
+                'accuracy_message': accuracy_message,
+                'classification_report': report,
+                'confusion_matrix': matrix.tolist(),  # Ubah confusion matrix ke list untuk template
+            })
+        else:
+                        return render(request, 'pages/predict/index.html', {
+                'result': kosong,
+            })

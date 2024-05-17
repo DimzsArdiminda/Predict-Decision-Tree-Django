@@ -1,0 +1,56 @@
+{% include 'layout/app.html' %}
+<div class="container mt-5 mb-5">
+	<h1 class="text-center">Hasil</h1>
+	<div class="row mt-4">
+		<!-- hasil -->
+		{% if result %}
+		<div class="container mt-5 mb-5">
+			<div class="mt-4">
+				<h3>Prediksi:</h3>
+				<p>{{ result }}</p>
+			</div>
+
+			<div class="mt-4">
+				<h3>Akurasi Model:</h3>
+				<p>{{ accuracy_message }}</p>
+			</div>
+
+			<div class="mt-4">
+				<h3>Laporan Klasifikasi:</h3>
+				<pre>{{ classification_report }}</pre>
+			</div>
+
+			<div class="mt-4">
+				<h3>Report Klasifikasi:</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Prediksi Negatif</th>
+							<th>Prediksi Positif</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>Actual Negatif</th>
+							<td>{{ confusion_matrix.0.0 }}</td>
+							<td>{{ confusion_matrix.0.1 }}</td>
+						</tr>
+						<tr>
+							<th>Actual Positif</th>
+							<td>{{ confusion_matrix.1.0 }}</td>
+							<td>{{ confusion_matrix.1.1 }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		{% else %}
+		<div class="container mt-5 mb-5">
+			<div class="mt-4">
+				<h3>{{ result }}</h3>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
