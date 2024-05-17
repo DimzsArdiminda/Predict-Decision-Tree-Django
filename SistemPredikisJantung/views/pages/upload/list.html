@@ -1,0 +1,26 @@
+{% include 'layout/app.html' %} 
+
+{% block content %}
+
+<div>
+    <a href="{% url 'upload-dataset' %}">Upload Dataset</a>
+
+    {% for item in data %}
+
+    <div>
+        <p>{{ item.title }}</p>
+        
+        <a href="{% url 'display-dataset' item.pk %}">Display dataset</a>
+
+        <button>
+            <a href="{% url 'delete-dataset' item.pk %}">
+                Delete
+            </a>
+        </button>
+    </div>
+    
+    {% endfor %}
+    
+</div>
+    
+{% endblock %}

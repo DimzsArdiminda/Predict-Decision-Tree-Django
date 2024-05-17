@@ -1,0 +1,56 @@
+{% include 'layout/app.html' %} 
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+    <h1 class="text-center">Hasil Model {{ model.title }}</h1>
+
+    <div class="mt-4">
+        <h3>Akurasi Model:</h3>
+        <p>{{ accuracy }}%</p>
+    </div>
+
+    <div class="mt-4">
+        <h3>Laporan Klasifikasi:</h3>
+        <pre>{{ report }}</pre>
+    </div>
+
+    <div class="mt-4">
+        <h3>Confusion Matrix:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Prediksi Negatif</th>
+                    <th>Prediksi Positif</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Actual Negatif</th>
+                    <td>{{ matrix.0.0 }}</td>
+                    <td>{{ matrix.0.1 }}</td>
+                </tr>
+                <tr>
+                    <th>Actual Positif</th>
+                    <td>{{ matrix.1.0 }}</td>
+                    <td>{{ matrix.1.1 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'predict-model' %}">Go to predict</a>
+    </div>
+    
+    <div class="mt-4">
+        <a href="#">Visualisasi Model</a>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'list-dataset' %}">Go to dataset list</a>
+    </div>
+</div>
+
+{% endblock %}
