@@ -18,13 +18,21 @@
 		<div class="mb-8">
 			{{ form.dataset | add_label_class:"block mb-2 text-sm font-medium text-gray-900" }} 
 			{% render_field form.dataset class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full" %}
-			<p class="text-xs leading-5 text-gray-600">CSV up to 10MB</p>
+			<p>CSV up to 5MB</p>
+			<p>Dataset numeric only</p>
+		
+			<!-- error message -->
+			{% if form.dataset.errors %}
+				<div class="text-danger">
+					{{ form.dataset.errors }}
+				</div>
+			{% endif %}
 		</div>
 
 		<input type="submit" value="Submit" />
 	</form>
 
-	<a href="{% url 'show-dataset' %}">Uploaded Dataset</a>
+	<a href="{% url 'list-dataset' %}">Uploaded Dataset</a>
 </div>
 
 {% endblock %}

@@ -9,7 +9,14 @@
 
     <div>
         <p>{{ item.title }}</p>
-        <a href="{{ item.dataset.url }}">Display dataset</a>
+        
+        <a href="{% url 'display-dataset' item.pk %}">Display dataset</a>
+
+        <button>
+            <a href="{% url 'delete-dataset' item.pk %}">
+                Delete
+            </a>
+        </button>
     </div>
     
     {% endfor %}

@@ -24,12 +24,16 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test1/', views.test1),
     path('', views.index, name='index'),
     path('about/', views.about, name='about'),
     path('form/', views.form, name='form'),
     # route
     path('upload/', views.upload_dataset, name='upload-dataset'),
-    path('show/', views.show_dataset, name='show-dataset'),
+    path('list/', views.list_dataset, name='list-dataset'),
+    path('delete/<int:pk>/', views.delete_dataset, name='delete-dataset'),
+    path('display/<int:pk>/', views.display_dataset, name='display-dataset'),
+    path('result/<int:pk>/', views.create_model, name='create-model'),
+    path('model/<int:pk>/', views.model, name='model'),
+    path('predict/', views.predict_view, name='predict'),
     path('form/hasil/', views.predict_view, name='predict'),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

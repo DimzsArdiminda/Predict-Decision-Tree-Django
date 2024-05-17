@@ -1,12 +1,17 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from .calculate import train_model_and_predict
 import pandas as pd
 from main.forms import DatasetForm
-from main.models import Datasets
+from main.models import Datasets, Models
+from django.db.models import Q
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier 
+from sklearn.model_selection import train_test_split 
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import pickle
+from django.core.files import File
 
-def test1(request):
-    return HttpResponse("<h1>Test 1</h1>")
 
 def index(request):
     return render(request, 'pages/index.html')
@@ -28,10 +33,85 @@ def upload_dataset(request):
     context = {'form': DatasetForm()}
     return render(request, 'pages/upload/index.html', context)
 
-def show_dataset(request):
+def list_dataset(request):
     data = Datasets.objects.all()
     context = {'data': data}
-    return render(request, 'pages/upload/show.html', context)
+    return render(request, 'pages/upload/list.html', context)
+
+
+def delete_dataset(request, pk):
+    data = get_object_or_404(Datasets, pk = pk)
+    model = Models.objects.filter(Q(title = data.title)).first()
+    if model:
+        model.delete()
+    data.delete()
+    return redirect('list-dataset')
+
+
+def display_dataset(request, pk):
+    file = Datasets.objects.get(pk = pk)
+    model = Models.objects.filter(Q(title = file.title)).exists()
+    data = pd.read_csv(file.dataset)
+    headers = data.columns.to_list()
+    data_preview = data.head(10).to_html()
+    context = {'data_preview': data_preview, 'headers' : headers, 'pk' : pk, 'model' : model}
+    return render(request, 'pages/upload/display.html', context)
+
+
+def create_model(request, pk):
+    file = Datasets.objects.get(pk = pk)
+    data = pd.read_csv(file.dataset)
+    if request.method == 'POST':
+        label_class = request.POST.get('label_class')
+        feature_cols = data.drop(label_class, axis=1)
+    
+        X = feature_cols
+        y = data[label_class]
+        
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
+        
+        model = DecisionTreeClassifier()
+        model = model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        
+        accuracy = accuracy_score(y_test, y_pred)
+        report = classification_report(y_test, y_pred)
+        matrix = confusion_matrix(y_test, y_pred)
+        
+        filename = file.title.replace(" ", "-") + '.pkl'
+        with open(filename, 'wb') as f:
+            pickle.dump(model, f)
+        
+        with open(filename, 'rb') as f:
+            model_file = File(f)
+            Models.objects.create(
+                title = file.title,
+                model = model_file,
+                accuracy = accuracy, 
+                report = report, 
+                matrix = matrix,
+            )
+        
+        # context = {'accuracy': accuracy, 'report': report, 'matrix': matrix, "data" : file}
+        # return render(request, 'pages/result/index.html', context)
+        return redirect('model', pk)
+
+
+def model(request, pk):
+    data = Datasets.objects.get(pk = pk)
+    model = Models.objects.filter(Q(title = data.title)).first()
+    
+    accuracy = f"{model.accuracy * 100:.2f}"
+    report = model.report
+    matrix_str = model.matrix.replace('[', ' ').replace(']', ' ')
+    matrix = [list(map(int, row.split())) for row in matrix_str.split('\n')]
+    
+    context = {'accuracy': accuracy, 'report': report, 'matrix': matrix, "data" : data}
+    return render(request, 'pages/result/index.html', context)
+
+def predict(request):
+    pass
+
 
 def predict_view(request):
     if request.method == 'POST':
