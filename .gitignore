@@ -1,5 +1,4 @@
 /Env/*
 main/.env
-SistemPredikisJantung/file/dataset/*
-
-
+SistemPredikisJantung/file/*
+**/*.pyc
