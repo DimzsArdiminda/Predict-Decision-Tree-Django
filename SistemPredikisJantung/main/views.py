@@ -113,7 +113,8 @@ def predict(request):
     pass
 
 
-def predict_view(request):
+def predict_view(request,pk):
+    data = get_object_or_404(Datasets, pk=pk)
     if request.method == 'POST':
         # Mengambil nilai dari form sebagai string
         age_str = request.POST.get('age')
@@ -162,21 +163,24 @@ def predict_view(request):
         # print(new_data)
 
         # # Lakukan prediksi menggunakan model
-        prediction, accuracy, report, matrix = train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, fasting_blood_sugar, rest_ecg, max_heart, exercise_angina, oldpeak, st_slope)
+        prediction, accuracy, report, matrix, status = train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, fasting_blood_sugar, rest_ecg, max_heart, exercise_angina, oldpeak, st_slope)
         result = "Terkena penyakit jantung" if prediction[0] == 1 else "Tidak terkena penyakit jantung"
         accuracy_message = "Akurasi Model: {:.2f}%".format(accuracy * 100)
         report_message = "Laporan Klasifikasi:\n{}".format(report)
         matrix_message = "Matriks Konfusi:\n{}".format(matrix)
-        kosong = 'belum ada hasil'
-        # condition if result, accuracy repot_massage matirxc is not None
-        if result is not None and accuracy_message is not None and report is not None and matrix is not None:
-            return render(request, 'pages/predict/index.html', {
-                'result': result,
-                'accuracy_message': accuracy_message,
-                'classification_report': report,
-                'confusion_matrix': matrix.tolist(),  # Ubah confusion matrix ke list untuk template
-            })
-        else:
-                        return render(request, 'pages/predict/index.html', {
-                'result': kosong,
-            })
+        status_meesage = "Status: {}".format(status)
+        return render(request, 'pages/predict/index.html', {
+            'result': result,
+            'accuracy_message': accuracy_message,
+            'classification_report': report,
+            'confusion_matrix': matrix.tolist(),  # Ubah confusion matrix ke list untuk template
+        })
+    else:
+        context = {
+            'result': "Belum ada hasil",
+            'accuracy_message': None,
+            'classification_report': None,
+            'confusion_matrix': None,
+            "Status_Model" : None,
+        }
+        return render(request, 'pages/predict/index.html', context)

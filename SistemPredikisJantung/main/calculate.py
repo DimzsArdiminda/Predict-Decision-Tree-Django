@@ -2,12 +2,13 @@ import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from .models import Datasets, Models
 
 def train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, fasting_blood_sugar,
                             resting_ecg, max_heart_rate, exercise_angina, oldpeak, st_slope):
-    # Langkah 1: Muat data dari lokasi yang tepat
-    data = pd.read_csv("../data/dataset.csv")
-
+    # Langkah 1: ambil data dari datasbase "main_dataset" berdasarkan title
+    data = Datasets.objects.get(title='main_dataset').dataset.read().decode('utf-8')
+    
     # Langkah 2: Persiapan Data
     X = data.drop('target', axis=1)  # Fitur
     y = data['target']  # Target
