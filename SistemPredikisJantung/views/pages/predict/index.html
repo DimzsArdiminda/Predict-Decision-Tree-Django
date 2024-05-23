@@ -1,83 +1,79 @@
 {% include 'layout/app.html' %}
 <div class="container mt-5 mb-5">
-	<h1 class="text-center">Hasil</h1>
-	<div class="row mt-4">
-		<!-- hasil -->
-		{% if result %}
-		<div class="container mt-5 mb-5">
-			<div class="mt-4">
-				<h3>Prediksi:</h3>
-				<p>{{ result }}</p>
-			</div>
+    <h1 class="text-center">Hasil</h1>
+    <div class="row mt-4">
+        {% if result %}
+        <div class="container mt-5 mb-5">
+            <div class="mt-4">
+                <h3>Prediksi:</h3>
+                <p>{{ result }}</p>
+            </div>
 
-			<div class="mt-4">
-				<h3>Akurasi Model:</h3>
-				<p>{{ accuracy_message }}</p>
-			</div>
+            <div class="mt-4">
+                <h3>Akurasi Model:</h3>
+                <p>{{ accuracy_message }}</p>
+            </div>
 
-			<div class="mt-4">
-				<h3>Laporan Klasifikasi:</h3>
-				<pre>{{ classification_report }}</pre>
-			</div>
+            <div class="mt-4">
+                <h3>Laporan Klasifikasi:</h3>
+                <pre>{{ classification_report }}</pre>
+            </div>
 
-			<div class="mt-4">
-				<h3>Report Klasifikasi:</h3>
-				<table class="table">
-					<thead>
-						<tr>
-							<th></th>
-							<th>Prediksi Negatif</th>
-							<th>Prediksi Positif</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<th>Actual Negatif</th>
-							<td>{{ confusion_matrix.0.0 }}</td>
-							<td>{{ confusion_matrix.0.1 }}</td>
-						</tr>
-						<tr>
-							<th>Actual Positif</th>
-							<td>{{ confusion_matrix.1.0 }}</td>
-							<td>{{ confusion_matrix.1.1 }}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		{% else %}
-		<div class="container mt-5 mb-5">
-			<div class="mt-4">
-				<h3>{{ result }}</h3>
-			</div>
-		</div>
-		{% endif %}
-		<h2>Decision Tree Visualization</h2>
-		<!-- <img src="data:image/png;base64,{{ tree_image }}" alt="Decision Tree"> -->
-		<!-- <a href="data:application/pdf;base64,{{ pdf_data }}" download="decision_tree.pdf" class="btn btn-primary">Download PDF</a> -->
-		<!-- <iframe width="100%" height="600px" src="data:application/pdf;base64,{{ pdf_data }}"></iframe> -->
+            <div class="mt-4">
+                <h3>Report Klasifikasi:</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Prediksi Negatif</th>
+                            <th>Prediksi Positif</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Actual Negatif</th>
+                            <td>{{ confusion_matrix.0.0 }}</td>
+                            <td>{{ confusion_matrix.0.1 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Actual Positif</th>
+                            <td>{{ confusion_matrix.1.0 }}</td>
+                            <td>{{ confusion_matrix.1.1 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="container mt-5 mb-5">
+            <div class="mt-4">
+                <h3>{{ result }}</h3>
+            </div>
+        </div>
+        {% endif %}
 
-		<!-- Provide a link to download the PDF -->
-		<!-- <a href="data:application/pdf;base64,{{ pdf_data }}" download="decision_tree.pdf" class="btn btn-primary">Download PDF</a> -->
-		<a href="#" onclick="openPDF('{{ pdf_data }}')" class="btn btn-primary">Open PDF in New Tab</a>
+        {% if pdf_data %}
+        <h2>Decision Tree Visualization</h2>
+        <a href="#" onclick="openPDF('{{ pdf_data }}')" class="btn btn-primary">Open PDF in New Tab</a>
 
-		<script>
-			function openPDF(pdfData) {
-				// Create a Blob object representing the PDF data
-				var byteCharacters = atob(pdfData);
-				var byteNumbers = new Array(byteCharacters.length);
-				for (var i = 0; i < byteCharacters.length; i++) {
-					byteNumbers[i] = byteCharacters.charCodeAt(i);
-				}
-				var byteArray = new Uint8Array(byteNumbers);
-				var pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+        <script>
+            function openPDF(pdfData) {
+                // Create a Blob object representing the PDF data
+                var byteCharacters = atob(pdfData);
+                var byteNumbers = new Array(byteCharacters.length);
+                for (var i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                var byteArray = new Uint8Array(byteNumbers);
+                var pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
 
-				// Generate a URL for the Blob
-				var pdfUrl = URL.createObjectURL(pdfBlob);
+                // Generate a URL for the Blob
+                var pdfUrl = URL.createObjectURL(pdfBlob);
 
-				// Open the PDF in a new tab
-				window.open(pdfUrl, '_blank');
-			}
-		</script>
-	</div>
+                // Open the PDF in a new tab
+                window.open(pdfUrl, '_blank');
+            }
+        </script>
+        {% endif %}
+    </div>
 </div>
