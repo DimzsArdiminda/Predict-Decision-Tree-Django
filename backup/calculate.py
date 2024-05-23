@@ -12,27 +12,26 @@ def load_dataset_and_model():
     if latest_dataset:
         dataset_path = latest_dataset.dataset.path
     else:
-        return None, None, 'No dataset found in the database.'
+        raise Exception("No dataset found in the database.")
 
     # Ambil model berdasarkan dataset
     related_model = Models.objects.filter(title=latest_dataset.title).first()
     if related_model:
         model_path = related_model.model.path
     else:
-        return None, None, 'No model found in the database.'
+        raise Exception("No model found in the database for the latest dataset.")
 
     # Muat dataset dan model
     data = pd.read_csv(dataset_path)
     with open(model_path, 'rb') as f:
         model = pickle.load(f)
 
-    return data, model, None
-
+    return data, model
 
 def train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, fasting_blood_sugar,
                             resting_ecg, max_heart_rate, exercise_angina, oldpeak, st_slope):
     # Langkah 1: Muat dataset dan model
-    data, model, _  = load_dataset_and_model()
+    data, model = load_dataset_and_model()
 
     # Langkah 2: Persiapan Data
     X = data.drop('target', axis=1)  # Fitur

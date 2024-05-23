@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from .calculate import train_model_and_predict, load_dataset_and_model
+from .calculate import train_model_and_predict
 import pandas as pd
 from main.forms import DatasetForm
 from main.models import Datasets, Models
@@ -114,8 +114,7 @@ def predict(request):
     pass
 
 
-def predict_view(request,pk):
-    data = get_object_or_404(Datasets, pk=pk)
+def predict_view(request):
     if request.method == 'POST':
         # Mengambil nilai dari form sebagai string
         age_str = request.POST.get('age')
@@ -147,12 +146,7 @@ def predict_view(request,pk):
             # Penanganan jika konversi gagal (misalnya karena input tidak valid)
             return HttpResponse("Invalid input. Please enter valid values.")
 
-
         # Lakukan prediksi menggunakan model
-        data, model, error = load_dataset_and_model()
-        if error:
-            return render(request, 'pages/error/index.html', {'error': error})
-
         prediction, accuracy, report, matrix, model = train_model_and_predict(age, sex, chest_pain_type, resting_bp,
                                                                             cholesterol, fasting_blood_sugar, rest_ecg,
                                                                             max_heart, exercise_angina, oldpeak, st_slope)
@@ -160,6 +154,65 @@ def predict_view(request,pk):
         accuracy_message = "Akurasi Model: {:.2f}%".format(accuracy * 100)
         report_message = "Laporan Klasifikasi:\n{}".format(report)
         matrix_message = "Matriks Konfusi:\n{}".format(matrix)
+
+        # plt.figure(figsize=(20, 15))
+        # plot_tree(model, filled=True, feature_names=['age', 'sex', 'chest_pain_type', 'resting_bp', 'cholesterol',
+        #                                              'fasting_blood_sugar', 'rest_ecg', 'max_heart_rate',
+        #                                              'exercise_angina', 'oldpeak', 'st_slope'])
+        # plt.savefig('tree_image.png')
+        # plt.close()
+        # pdf_bytes = BytesIO()
+        # plt.savefig(pdf_bytes, format='pdf')
+        # plt.close()
+
+        # with open('tree_image.png', 'rb') as img_file:
+        #     tree_image = base64.b64encode(img_file.read()).decode('utf-8')
+
+        # pdf_bytes.seek(0)
+        # pdf_data = pdf_bytes.getvalue()
+        
+        # # Encode PDF data to base64 for embedding in HTML
+        # pdf_base64 = base64.b64encode(pdf_data).decode('utf-8')
+
+        # if result is not None and accuracy_message is not None and report is not None and matrix is not None:
+        #     return render(request, 'pages/predict/index.html', {
+        #         'result': result,
+        #         'accuracy_message': accuracy_message,
+        #         'classification_report': report,
+        #         'confusion_matrix': matrix.tolist(),  # Ubah confusion matrix ke list untuk template
+        #         'tree_image': tree_image,
+        #         'pdf_data': pdf_base64,
+        #     })
+        # else:
+        #     return render(request, 'pages/predict/index.html', {
+        #         'result': kosong,
+        #     })
+        # plt.figure(figsize=(20, 15))
+        # plot_tree(model, filled=True, feature_names=['age', 'sex', 'chest_pain_type', 'resting_bp', 'cholesterol',
+        #                                              'fasting_blood_sugar', 'rest_ecg', 'max_heart_rate',
+        #                                              'exercise_angina', 'oldpeak', 'st_slope'])
+        # pdf_bytes = BytesIO()
+        # plt.savefig(pdf_bytes, format='pdf')
+        # plt.close()
+
+        # # Convert PDF data to base64 for embedding in HTML
+        # pdf_bytes.seek(0)
+        # pdf_data = pdf_bytes.getvalue()
+        # pdf_base64 = base64.b64encode(pdf_data).decode('utf-8')
+
+        # # Embed the PDF in the response
+        # if result is not None and accuracy_message is not None and report is not None and matrix is not None:
+        #     return render(request, 'pages/predict/index.html', {
+        #         'result': result,
+        #         'accuracy_message': accuracy_message,
+        #         'classification_report': report,
+        #         'confusion_matrix': matrix.tolist(),  # Convert confusion matrix to list for template
+        #         'pdf_data': pdf_base64,
+        #     })
+        # else:
+        #     return render(request, 'pages/predict/index.html', {
+        #         'result': kosong,
+        #     })
 
         # Plot decision tree and save directly to BytesIO
         plt.figure(figsize=(20, 15))
