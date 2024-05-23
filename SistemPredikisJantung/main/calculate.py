@@ -46,4 +46,4 @@ def train_model_and_predict(age, sex, chest_pain_type, resting_bp, cholesterol, 
     # Melakukan prediksi menggunakan model Decision Tree yang sudah dilatih
     prediction = model.predict(new_data)
 
-    return prediction, accuracy, report, matrix
+    return prediction, accuracy, report, matrix, model

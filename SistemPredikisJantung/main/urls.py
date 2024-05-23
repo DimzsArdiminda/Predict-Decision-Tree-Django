@@ -34,6 +34,7 @@ urlpatterns = [
     path('display/<int:pk>/', views.display_dataset, name='display-dataset'),
     path('result/<int:pk>/', views.create_model, name='create-model'),
     path('model/<int:pk>/', views.model, name='model'),
+    path('predict-model/', views.predict_view, name='predict-model'),
     path('predict/', views.predict_view, name='predict'),
     path('form/hasil/', views.predict_view, name='predict'),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
