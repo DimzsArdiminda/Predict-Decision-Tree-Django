@@ -2,7 +2,7 @@
 <div class="container mt-5 mb-5">
 	<h1 class="text-center">Sistem Prediksi Penyakit Jantung</h1>
 	<div class="row mt-4">
-		<form method="post" action="{% url 'predict' %}">
+		<form method="post" action="{% url 'predict' pk %}">
 			{% csrf_token %}
 			<div class="form-group">
 				<label for="age">Masukkan usia (dalam tahun): </label>

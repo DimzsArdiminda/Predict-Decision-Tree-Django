@@ -1,5 +1,9 @@
 /Env/*
 /SistemPredikisJantung/file/*
+/SistemPredikisJantung/model/*
+/SistemPredikisJantung/output/*
 /SistemPredikisJantung/__pycache__/*
+/SistemPredikisJantung/main/__pycache__/*
+/SistemPredikisJantung/main/migrations/__pycache__/*
 /SistemPredikisJantung/.env
 /SistemPredikisJantung/*.pkl

@@ -20,11 +20,13 @@ class Datasets(models.Model):
         
 class Models(models.Model):
     title = models.CharField(max_length=255)
-    model = models.FileField(upload_to='model/', validators=[FileExtensionValidator(['pkl'])])
+    model = models.FileField(upload_to='', validators=[FileExtensionValidator(['pkl'])])
+    visualization = models.FileField(upload_to='', validators=[FileExtensionValidator(['pdf'])], default=None)
     accuracy = models.FloatField(default=None)
     report = models.TextField(default=None)
     matrix = models.TextField(default=None)
         
     def delete(self):
         self.model.delete()
+        self.visualization.delete()
         super().delete()

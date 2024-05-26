@@ -16,7 +16,7 @@
     </div>
 
     <div class="mt-4">
-        <h3>Confusion Matrix:</h3>
+        <h3>Report :</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -41,15 +41,12 @@
     </div>
 
     <div class="mt-4">
-        <a href="{% url 'form' %}">Go to predict</a>
+        <h3>Decision Tree Visualization :</h3>
+        <a href="{% url 'serve_pdf' model.pk %}" target="_blank" class="btn btn-primary">Open in New Tab</a>
     </div>
-    
+
     <div class="mt-4">
-        <a href="#">Visualisasi Model</a>
-    </div>
-    
-    <div class="mt-4">
-        <a href="{% url 'list-dataset' %}">Go to dataset list</a>
+        <a href="{% url 'form' pk %}" class="btn btn-primary">Go to predict</a>
     </div>
 </div>
 

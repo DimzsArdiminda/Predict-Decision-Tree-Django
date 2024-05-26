@@ -1,39 +1,47 @@
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from .calculate import train_model_and_predict, load_dataset_and_model
-import pandas as pd
-from main.forms import DatasetForm
-from main.models import Datasets, Models
-from django.db.models import Q
-import pandas as pd
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.model_selection import train_test_split 
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-import pickle
-from django.core.files import File
-import matplotlib.pyplot as plt
+import os
 import base64
+import pickle
+import pandas as pd
+import matplotlib.pyplot as plt
 from io import BytesIO
+from django.db.models import Q
+from django.core.files import File
+from django.http import HttpResponse, FileResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from sklearn import tree
+from sklearn.model_selection import train_test_split 
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from .calculate import train_model_and_predict, load_dataset_and_model
+from main.forms import DatasetForm, PredictForm
+from main.models import Datasets, Models
+
 
 def index(request):
     return render(request, 'pages/index.html')
 
-def form(request):
-    return render(request, 'pages/predict/form.html')
+
+def form(request, pk):
+    context = {'pk': pk}
+    return render(request, 'pages/predict/form.html', context)
+
 
 def about(request):
     return render(request, 'pages/about/index.html')
+
 
 def upload_dataset(request):
     if request.method == 'POST':
         form = DatasetForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            return redirect('list-dataset')
         else:
             context = {'form': form}
             return render(request, 'pages/upload/index.html', context)
     context = {'form': DatasetForm()}
     return render(request, 'pages/upload/index.html', context)
+
 
 def list_dataset(request):
     data = Datasets.objects.all()
@@ -44,8 +52,12 @@ def list_dataset(request):
 def delete_dataset(request, pk):
     data = get_object_or_404(Datasets, pk=pk)
     model = Models.objects.filter(Q(title=data.title)).first()
+    model_path = 'model/' + data.title.replace(" ", "-") + '.pkl'
+    visualization_path = 'output/' + data.title.replace(" ", "-") + '.pdf'
     if model:
         model.delete()
+        os.remove(model_path)
+        os.remove(visualization_path)
     data.delete()
     return redirect('list-dataset')
 
@@ -66,29 +78,42 @@ def create_model(request, pk):
     if request.method == 'POST':
         label_class = request.POST.get('label_class')
         feature_cols = data.drop(label_class, axis=1)
-
+        headers = feature_cols.columns.to_list()
+        
         X = feature_cols
         y = data[label_class]
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
-        model = DecisionTreeClassifier()
-        model = model.fit(X_train, y_train)
+        clf = DecisionTreeClassifier()
+        model = clf.fit(X_train, y_train)
         y_pred = model.predict(X_test)
 
         accuracy = accuracy_score(y_test, y_pred)
         report = classification_report(y_test, y_pred)
         matrix = confusion_matrix(y_test, y_pred)
 
-        filename = file.title.replace(" ", "-") + '.pkl'
-        with open(filename, 'wb') as f:
+        # save model .pkl
+        model_path = 'model/' + file.title.replace(" ", "-") + '.pkl'
+        with open(model_path, 'wb') as f:
             pickle.dump(model, f)
-
-        with open(filename, 'rb') as f:
-            model_file = File(f)
+        
+        # save visualization model .pdf
+        fig = plt.figure(figsize=(25,20))
+        dot_data = tree.plot_tree(clf, 
+                                feature_names=headers,
+                                filled=True,
+                                rounded=True)
+        visualization_path = 'output/' + file.title.replace(" ", "-") + '.pdf'
+        fig.savefig(visualization_path)
+        
+        with open(visualization_path, 'rb') as f1, open(model_path, 'rb') as f2:
+            visualization_file = File(f1)
+            model_file = File(f2)
             Models.objects.create(
                 title=file.title,
                 model=model_file,
+                visualization=visualization_file,
                 accuracy=accuracy,
                 report=report,
                 matrix=matrix,
@@ -100,23 +125,34 @@ def create_model(request, pk):
 def model(request, pk):
     data = Datasets.objects.get(pk=pk)
     model = Models.objects.filter(Q(title=data.title)).first()
-
+    
     accuracy = f"{model.accuracy * 100:.2f}"
     report = model.report
     matrix_str = model.matrix.replace('[', ' ').replace(']', ' ')
     matrix = [list(map(int, row.split())) for row in matrix_str.split('\n')]
 
-    context = {'accuracy': accuracy, 'report': report, 'matrix': matrix, "data": data}
+    context = {'accuracy': accuracy, 
+                'report': report, 
+                'matrix': matrix,
+                'model': model, 
+                'pk': pk}
     return render(request, 'pages/result/index.html', context)
 
 
-def predict(request):
-    pass
+def serve_pdf(request, pk):
+    model = Models.objects.filter(pk=pk).first()
+    pdf_file_path = model.visualization.path
+    return FileResponse(open(pdf_file_path, 'rb'), content_type='application/pdf')
 
 
-def predict_view(request):
+def predict_view(request, pk):
+    data = get_object_or_404(Datasets, pk=pk)
+    model_data = Models.objects.filter(Q(title=data.title)).first()
+    model_path = model_data.model.path
+    with open(model_path, 'rb') as f:
+        loaded_classifier = pickle.load(f)
+    
     if request.method == 'POST':
-        # Mengambil nilai dari form sebagai string
         age_str = request.POST.get('age')
         sex_str = request.POST.get('sex')
         chest_pain_type_str = request.POST.get('chest_pain_type')
@@ -143,44 +179,37 @@ def predict_view(request):
             oldpeak = float(oldpeak_str) if oldpeak_str else None
             st_slope = int(st_slope_str) if st_slope_str else None
         except ValueError:
-            # Penanganan jika konversi gagal (misalnya karena input tidak valid)
             return HttpResponse("Invalid input. Please enter valid values.")
 
+        # Menyiapkan input untuk prediksi
+        new_data = pd.DataFrame({
+            'age': [age],
+            'sex': [sex],
+            'chest pain type': [chest_pain_type],
+            'resting bp s': [resting_bp],
+            'cholesterol': [cholesterol],
+            'fasting blood sugar': [fasting_blood_sugar],
+            'resting ecg': [rest_ecg],
+            'max heart rate': [max_heart],
+            'exercise angina': [exercise_angina],
+            'oldpeak': [oldpeak],
+            'ST slope': [st_slope]
+        })
 
-        # Lakukan prediksi menggunakan model
-        data, model, error = load_dataset_and_model()
-        if error:
-            return render(request, 'pages/error/index.html', {'error': error})
-
-        prediction, accuracy, report, matrix, model = train_model_and_predict(age, sex, chest_pain_type, resting_bp,
-                                                                            cholesterol, fasting_blood_sugar, rest_ecg,
-                                                                            max_heart, exercise_angina, oldpeak, st_slope)
+        prediction = loaded_classifier.predict(new_data)
         result = "Terkena penyakit jantung" if prediction[0] == 1 else "Tidak terkena penyakit jantung"
-        accuracy_message = "Akurasi Model: {:.2f}%".format(accuracy * 100)
-        report_message = "Laporan Klasifikasi:\n{}".format(report)
-        matrix_message = "Matriks Konfusi:\n{}".format(matrix)
+        accuracy = f"{model_data.accuracy * 100:.2f}"
+        report = model_data.report
+        matrix_str = model_data.matrix.replace('[', ' ').replace(']', ' ')
+        matrix = [list(map(int, row.split())) for row in matrix_str.split('\n')]
 
-        # Plot decision tree and save directly to BytesIO
-        plt.figure(figsize=(20, 15))
-        plot_tree(model, filled=True, feature_names=['age', 'sex', 'chest_pain_type', 'resting_bp', 'cholesterol',
-                                                     'fasting_blood_sugar', 'rest_ecg', 'max_heart_rate',
-                                                     'exercise_angina', 'oldpeak', 'st_slope'])
-        pdf_bytes = BytesIO()
-        plt.savefig(pdf_bytes, format='pdf')
-        plt.close()
-
-        # Convert PDF data to base64
-        pdf_bytes.seek(0)
-        pdf_base64 = base64.b64encode(pdf_bytes.getvalue()).decode('utf-8')
-
-        # Pass the base64 encoded PDF data to the template
-        if result is not None and accuracy_message is not None and report is not None and matrix is not None:
+        if result is not None and accuracy is not None and report is not None and matrix is not None:
             return render(request, 'pages/predict/index.html', {
                 'result': result,
-                'accuracy_message': accuracy_message,
+                'accuracy_message': accuracy,
                 'classification_report': report,
-                'confusion_matrix': matrix.tolist(),
-                'pdf_data': pdf_base64,  # Pass the PDF data to the template
+                'confusion_matrix': matrix,
+                'pk': model_data.pk,
             })
         else:
             return render(request, 'pages/predict/index.html', {
