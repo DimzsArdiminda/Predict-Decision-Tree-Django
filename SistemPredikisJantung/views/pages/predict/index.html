@@ -11,7 +11,7 @@
 
             <div class="mt-4">
                 <h3>Akurasi Model:</h3>
-                <p>{{ accuracy_message }}</p>
+                <p>{{ accuracy_message }}%</p>
             </div>
 
             <div class="mt-4">
@@ -43,6 +43,10 @@
                     </tbody>
                 </table>
             </div>
+            <div class="mt-4">
+                <h3>Decision Tree Visualization :</h3>
+                <a href="{% url 'serve_pdf' pk %}" target="_blank" class="btn btn-primary">Open in New Tab</a>
+            </div>
         </div>
         {% else %}
         <div class="container mt-5 mb-5">
@@ -50,30 +54,6 @@
                 <h3>{{ result }}</h3>
             </div>
         </div>
-        {% endif %}
-
-        {% if pdf_data %}
-        <h2>Decision Tree Visualization</h2>
-        <a href="#" onclick="openPDF('{{ pdf_data }}')" class="btn btn-primary">Open PDF in New Tab</a>
-
-        <script>
-            function openPDF(pdfData) {
-                // Create a Blob object representing the PDF data
-                var byteCharacters = atob(pdfData);
-                var byteNumbers = new Array(byteCharacters.length);
-                for (var i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                var byteArray = new Uint8Array(byteNumbers);
-                var pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
-
-                // Generate a URL for the Blob
-                var pdfUrl = URL.createObjectURL(pdfBlob);
-
-                // Open the PDF in a new tab
-                window.open(pdfUrl, '_blank');
-            }
-        </script>
         {% endif %}
     </div>
 </div>
