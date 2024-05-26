@@ -1,52 +1,78 @@
-{% include 'layout/app.html' %} 
+{% include 'layout/app.html' %}
 
 {% block content %}
 
 <div class="container mt-5 mb-5">
-    <h1 class="text-center">Hasil Model {{ model.title }}</h1>
+    <h1 class="text-center mb-4">Hasil Model {{ model.title }}</h1>
 
-    <div class="mt-4">
-        <h3>Akurasi Model:</h3>
-        <p>{{ accuracy }}%</p>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Akurasi Model:</h3>
+                    <p class="card-text">{{ accuracy }}%</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="mt-4">
-        <h3>Laporan Klasifikasi:</h3>
-        <pre>{{ report }}</pre>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Laporan Klasifikasi:</h3>
+                    <pre class="card-text">{{ report }}</pre>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="mt-4">
-        <h3>Report :</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Prediksi Negatif</th>
-                    <th>Prediksi Positif</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>Actual Negatif</th>
-                    <td>{{ matrix.0.0 }}</td>
-                    <td>{{ matrix.0.1 }}</td>
-                </tr>
-                <tr>
-                    <th>Actual Positif</th>
-                    <td>{{ matrix.1.0 }}</td>
-                    <td>{{ matrix.1.1 }}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Report :</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Prediksi Negatif</th>
+                                <th>Prediksi Positif</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Actual Negatif</th>
+                                <td>{{ matrix.0.0 }}</td>
+                                <td>{{ matrix.0.1 }}</td>
+                            </tr>
+                            <tr>
+                                <th>Actual Positif</th>
+                                <td>{{ matrix.1.0 }}</td>
+                                <td>{{ matrix.1.1 }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="mt-4">
-        <h3>Decision Tree Visualization :</h3>
-        <a href="{% url 'serve_pdf' model.pk %}" target="_blank" class="btn btn-primary">Open in New Tab</a>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Decision Tree Visualization :</h3>
+                    <a href="{% url 'serve_pdf' model.pk %}" target="_blank" class="btn btn-primary" style="background-color: #003285;">Open in New Tab</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="mt-4">
-        <a href="{% url 'form' pk %}" class="btn btn-primary">Go to predict</a>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <a href="{% url 'form' pk %}" class="btn btn-primary" style="background-color: #003285;">Go to predict</a>
+        </div>
     </div>
 </div>
 

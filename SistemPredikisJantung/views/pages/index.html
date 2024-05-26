@@ -1,9 +1,28 @@
+{% load static %} 
+
 {% include 'layout/app.html' %}
-<div class="container mt-5 mb-5">
-	<h1 class="text-center">Sistem Prediksi Penyakit Jantung</h1>
-	<div class="row mt-4">
-		<div class="text-center">
-			<a href="{% url 'upload-dataset' %}" class="btn btn-primary">Upload Data</a>
-		</div>
-	</div>
+<div class="container mt-5 mb-5" style="padding-top: 100px;">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-8">
+            <div class="card border-primary">
+                <!-- Penyesuaian Header -->
+                <div class="card-header text-white text-center" style="background-color: #003285;">
+                    <h1 class="mb-0">Sistem Prediksi Penyakit Jantung</h1>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="{% static 'public/assets/5764322.jpg' %}" alt="Sistem Prediksi Penyakit Jantung" class="img-fluid">
+                        </div>
+                        <div class="col-md-6">
+                            <p class="lead text-center mb-4" style="padding-top:100px;">Selamat datang di Sistem Prediksi Penyakit Jantung. Silakan lakukan upload data untuk memulai.</p>
+                            <div class="text-center">
+                                <a href="{% url 'upload-dataset' %}" class="btn btn-primary btn-lg" style="background-color: #003285;">Upload Data</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -4,35 +4,47 @@
 
 {% block content %}
 
-<div class="p-8 flex container flex-col items-center">
-	<h1 class="font-medium leading-tight text-4xl mt-0 mb-4">Upload Dataset</h1>
+<div class="container mt-5 mb-5" style="padding-top: 150px;;">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-primary">
+                <div class="card-header text-white text-center" style="background-color: #003285;">
+                    <h1 class="mb-0">Upload Dataset</h1>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
 
-	<form method="POST" enctype="multipart/form-data">
-		{% csrf_token %}
+                        <div class="form-group mb-4">
+                            {{ form.title | add_label_class:"text-sm font-medium text-gray-900" }} 
+                            {% render_field form.title class="form-control" %}
+                        </div>
 
-		<div class="mb-4">
-			{{ form.title | add_label_class:"block mb-2 text-sm font-medium text-gray-900" }} 
-			{% render_field form.title class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg h-8 w-full" %}
-		</div>
+                        <div class="form-group mb-4">
+                            {{ form.dataset | add_label_class:"text-sm font-medium text-gray-900" }} 
+                            {% render_field form.dataset class="form-control-file" %}
+                            <small class="form-text text-muted">CSV up to 5MB</small>
+                            <small class="form-text text-muted">Dataset numeric only</small>
+                        
+                            <!-- error message -->
+                            {% if form.dataset.errors %}
+                                <div class="text-danger mt-2">
+                                    {{ form.dataset.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
 
-		<div class="mb-8">
-			{{ form.dataset | add_label_class:"block mb-2 text-sm font-medium text-gray-900" }} 
-			{% render_field form.dataset class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full" %}
-			<p>CSV up to 5MB</p>
-			<p>Dataset numeric only</p>
-		
-			<!-- error message -->
-			{% if form.dataset.errors %}
-				<div class="text-danger">
-					{{ form.dataset.errors }}
-				</div>
-			{% endif %}
-		</div>
-
-		<input type="submit" value="Submit" />
-	</form>
-
-	<a href="{% url 'list-dataset' %}">Uploaded Dataset</a>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary" style="background-color: #003285; color: white;">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center mt-4">
+                    <a href="{% url 'list-dataset' %}" class="btn btn-secondary">Uploaded Dataset</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

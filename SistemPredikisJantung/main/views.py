@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from .calculate import train_model_and_predict, load_dataset_and_model
-from main.forms import DatasetForm, PredictForm
+from main.forms import DatasetForm
 from main.models import Datasets, Models
 
 
@@ -219,4 +219,3 @@ def predict_view(request, pk):
         return render(request, 'pages/predict/index.html', {
             'result': ' belum ada hasil',
         })
-

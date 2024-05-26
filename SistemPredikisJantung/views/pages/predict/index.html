@@ -1,6 +1,6 @@
 {% include 'layout/app.html' %}
 <div class="container mt-5 mb-5">
-    <h1 class="text-center">Hasil</h1>
+    <h1 class="text-center" style="color: #003285;">Hasil</h1>
     <div class="row mt-4">
         {% if result %}
         <div class="container mt-5 mb-5">
@@ -45,7 +45,7 @@
             </div>
             <div class="mt-4">
                 <h3>Decision Tree Visualization :</h3>
-                <a href="{% url 'serve_pdf' pk %}" target="_blank" class="btn btn-primary">Open in New Tab</a>
+                <a href="{% url 'serve_pdf' pk %}" target="_blank" class="btn btn-primary" style="background-color: #003285;">Open in New Tab</a>
             </div>
         </div>
         {% else %}
