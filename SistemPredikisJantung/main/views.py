@@ -12,7 +12,6 @@ from sklearn import tree
 from sklearn.model_selection import train_test_split 
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from .calculate import train_model_and_predict, load_dataset_and_model
 from main.forms import DatasetForm
 from main.models import Datasets, Models
 
@@ -67,7 +66,7 @@ def display_dataset(request, pk):
     model = Models.objects.filter(Q(title=file.title)).exists()
     data = pd.read_csv(file.dataset)
     headers = data.columns.to_list()
-    data_preview = data.head(10).to_html()
+    data_preview = data.head(10).to_html(classes='display', table_id="data-table")
     context = {'data_preview': data_preview, 'headers': headers, 'pk': pk, 'model': model}
     return render(request, 'pages/upload/display.html', context)
 

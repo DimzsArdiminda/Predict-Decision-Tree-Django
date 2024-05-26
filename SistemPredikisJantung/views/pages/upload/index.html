@@ -16,15 +16,16 @@
                         {% csrf_token %}
 
                         <div class="form-group mb-4">
-                            {{ form.title | add_label_class:"text-sm font-medium text-gray-900" }} 
+                            {{ form.title | add_label_class:"text-sm" }} 
                             {% render_field form.title class="form-control" %}
                         </div>
 
                         <div class="form-group mb-4">
-                            {{ form.dataset | add_label_class:"text-sm font-medium text-gray-900" }} 
+                            {{ form.dataset | add_label_class:"text-sm" }} <br>
                             {% render_field form.dataset class="form-control-file" %}
-                            <small class="form-text text-muted">CSV up to 5MB</small>
-                            <small class="form-text text-muted">Dataset numeric only</small>
+                            <br>
+                            <small class="form-text text-muted">CSV up to 5MB |</small>
+                            <small class="form-text text-muted">Dataset numeric</small>
                         
                             <!-- error message -->
                             {% if form.dataset.errors %}
