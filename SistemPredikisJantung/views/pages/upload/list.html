@@ -2,25 +2,22 @@
 
 {% block content %}
 
-<div>
-    <a href="{% url 'upload-dataset' %}">Upload Dataset</a>
+<div class="container mt-5">
+    <div class="text-center mb-3">
+        <a href="{% url 'upload-dataset' %}" class="btn btn-primary" style="background-color: #003285;">Upload Dataset</a>
+    </div>
 
     {% for item in data %}
-
-    <div>
-        <p>{{ item.title }}</p>
-        
-        <a href="{% url 'display-dataset' item.pk %}">Display dataset</a>
-
-        <button>
-            <a href="{% url 'delete-dataset' item.pk %}">
-                Delete
-            </a>
-        </button>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+            <div class="text-center">
+                <a href="{% url 'display-dataset' item.pk %}" class="btn btn-primary mr-2" style="background-color: #003285;" style="background-color: #003285;">Display Dataset</a>
+                <a href="{% url 'delete-dataset' item.pk %}" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
     </div>
-    
     {% endfor %}
-    
 </div>
     
 {% endblock %}

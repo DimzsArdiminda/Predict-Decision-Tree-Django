@@ -1,15 +1,17 @@
 {% include 'layout/app.html' %}
 <div class="container mt-5 mb-5">
+	<div class="card">
+		<div class="card-body">
 	<h1 class="text-center">Sistem Prediksi Penyakit Jantung</h1>
-	<div class="row mt-4">
+	
 		<form method="post" action="{% url 'predict' pk %}">
 			{% csrf_token %}
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="age">Masukkan usia (dalam tahun): </label>
 				<input type="number" id="age" name="age" required class="form-control" />
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="sex">Masukkan jenis kelamin: </label>
 				<select id="sex" name="sex" required class="form-control">
 					<option value="1">Pria</option>
@@ -17,7 +19,7 @@
 				</select>
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="chest_pain_type">Masukkan tipe nyeri dada: </label>
 				<select id="chest_pain_type" name="chest_pain_type" required class="form-control">
 					<option value="1">typical angina</option>
@@ -27,17 +29,17 @@
 				</select>
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="resting_bp">Masukkan tekanan darah istirahat (mm Hg): </label>
 				<input type="number" id="resting_bp" name="resting_bp" required class="form-control" />
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="cholesterol">Masukkan kolesterol (mg/dl): </label>
 				<input type="number" id="cholesterol" name="cholesterol" required class="form-control" />
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="fasting_blood_sugar">Masukkan apakah kadar gula darah puasa > 120 mg/dl: </label>
 				<select id="fasting_blood_sugar" name="fasting_blood_sugar" required class="form-control">
 					<option value="1">True</option>
@@ -45,7 +47,7 @@
 				</select>
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="resting_ecg">Masukkan hasil elektrokardiogram istirahat: </label>
 				<select id="resting_ecg" name="resting_ecg" required class="form-control">
 					<option value="0">normal</option>
@@ -54,12 +56,12 @@
 				</select>
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="max_heart_rate">Masukkan detak jantung maksimal (71-202): </label>
 				<input type="number" id="max_heart_rate" name="max_heart_rate" required class="form-control" min="71" max="202" />
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="exercise_angina">Apakah Anda mengalami angina yang dipicu oleh latihan?: </label>
 				<select id="exercise_angina" name="exercise_angina" required class="form-control">
 					<option value="1">Ya</option>
@@ -67,12 +69,12 @@
 				</select>
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="oldpeak">Masukkan depresi ST oldpeak: </label>
 				<input type="number" id="oldpeak" name="oldpeak" required placeholder="0.0 atau 1.0" class="form-control" min="0.0" max="1.0" />
 			</div>
 
-			<div class="form-group">
+			<div class="form-group mb-2">
 				<label for="slope">Masukkan kemiringan segmen ST puncak latihan: </label>
 				<select id="slope" name="slope" required class="form-control">
 					<option value="0">upsloping</option>
@@ -81,7 +83,8 @@
 				</select>
 			</div>
 
-			<button type="submit" class="btn btn-primary mt-3">Prediksi</button>
+			<button type="submit" class="btn btn-primary mt-3" style="background-color: #003285;">Prediksi</button>
 		</form>
+		</div>
 	</div>
 </div>

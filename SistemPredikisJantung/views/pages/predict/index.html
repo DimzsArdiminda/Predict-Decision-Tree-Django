@@ -1,53 +1,85 @@
 {% include 'layout/app.html' %}
+
+{% block content %}
+
 <div class="container mt-5 mb-5">
-    <h1 class="text-center">Hasil</h1>
-    <div class="row mt-4">
+    <h1 class="text-center" style="color: #003285;">Hasil Prediksi</h1>
+    <div class="mb-4">
         {% if result %}
-        <div class="container mt-5 mb-5">
-            <div class="mt-4">
-                <h3>Prediksi:</h3>
-                <p>{{ result }}</p>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">Prediksi:</h3>
+                            <p class="card-text">{{ result }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="mt-4">
-                <h3>Akurasi Model:</h3>
-                <p>{{ accuracy_message }}%</p>
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">Akurasi Model:</h3>
+                            <p class="card-text">{{ accuracy_message }}%</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="mt-4">
-                <h3>Laporan Klasifikasi:</h3>
-                <pre>{{ classification_report }}</pre>
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">Laporan Klasifikasi:</h3>
+                            <pre class="card-text">{{ classification_report }}</pre>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="mt-4">
-                <h3>Report Klasifikasi:</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Prediksi Negatif</th>
-                            <th>Prediksi Positif</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>Actual Negatif</th>
-                            <td>{{ confusion_matrix.0.0 }}</td>
-                            <td>{{ confusion_matrix.0.1 }}</td>
-                        </tr>
-                        <tr>
-                            <th>Actual Positif</th>
-                            <td>{{ confusion_matrix.1.0 }}</td>
-                            <td>{{ confusion_matrix.1.1 }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">Matriks:</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Prediksi Negatif</th>
+                                        <th>Prediksi Positif</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Actual Negatif</th>
+                                        <td>{{ confusion_matrix.0.0 }}</td>
+                                        <td>{{ confusion_matrix.0.1 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Actual Positif</th>
+                                        <td>{{ confusion_matrix.1.0 }}</td>
+                                        <td>{{ confusion_matrix.1.1 }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="mt-4">
-                <h3>Decision Tree Visualization :</h3>
-                <a href="{% url 'serve_pdf' pk %}" target="_blank" class="btn btn-primary">Open in New Tab</a>
+
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">Decision Tree Visualization :</h3>
+                            <a href="{% url 'serve_pdf' pk %}" target="_blank" class="btn btn-primary" style="background-color: #003285;">Open in New Tab</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
         {% else %}
         <div class="container mt-5 mb-5">
             <div class="mt-4">
@@ -55,5 +87,13 @@
             </div>
         </div>
         {% endif %}
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <a href="{% url 'list-dataset' %}" class="btn btn-primary" style="background-color: #003285;">Go to List Dataset</a>
+            </div>
+        </div>
     </div>
 </div>
+
+{% endblock %}
